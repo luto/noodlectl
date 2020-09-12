@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>noodlectl</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         .slots {
             display: flex;
             flex-direction: row;
@@ -13,21 +17,38 @@
             gap: 2rem;
             flex-wrap: wrap;
         }
+
         .slot {
+            --slot__crop-left: 65px;
+            --slot__crop-top: 30px;
+            --slot__diet-control-width: 85px;
+            --slot__font-size: 16px;
+            --slot__url-control-width: 200px;
+
             border: black 1px solid;
+            display: grid;
+            grid-template-areas:
+                "noodles-top noodles-top-right noodles-top-right"
+                "noodles-left name name"
+                "noodles-left url diet"
+                "noodles-left url price_cents";
+
+            grid-template-columns: var(--slot__crop-left) auto var(--slot__diet-control-width);
             padding: 1rem;
             flex-basis: 10rem;
+            font-size: var(--slot__font-size);
         }
-        .slot__title {
-            text-align: center;
-            margin: 0;
-            margin-bottom: 1rem;
-        }
+
         form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
+        input, textarea {
+            font-size: var(--slot__font-size);
+        }
+
         input[type=submit] {
             padding: 0.5rem 2rem;
             margin-top: 3rem;
@@ -35,17 +56,78 @@
             --glow-color: yellow;
             animation: glowing 2s infinite;
         }
+
         @keyframes glowing {
-            0% { box-shadow: 0 0 0 var(--glow-color); }
-            50% { box-shadow: 0 0 2rem var(--glow-color); }
-            0% { box-shadow: 0 0 0 var(--glow-color); }
+            0% {
+                box-shadow: 0 0 0 var(--glow-color);
+            }
+            50% {
+                box-shadow: 0 0 2rem var(--glow-color);
+            }
+            0% {
+                box-shadow: 0 0 0 var(--glow-color);
+            }
         }
+
         .setting {
-            margin-top: 0.5rem;
+            padding: 0.1rem;
         }
-        .setting__name {
-            font-weight: bold;
-            text-transform: capitalize;
+
+        .slot__noodles--left {
+            background-image: url("/static/sticks_left.jpg");
+            grid-area: noodles-left;
+            height: 100%;
+            width: var(--slot__crop-left);
+            background-repeat: repeat-y;
+        }
+
+        .slot__noodles--top {
+            background-image: url("/static/sticks_top.jpg");
+            grid-area: noodles-top;
+            height: var(--slot__crop-top);
+            width: 100%;
+        }
+
+        .slot__noodles--top-right {
+            background-repeat: repeat-x;
+            background-image: url("/static/sticks_top-right.jpg");
+            grid-area: noodles-top-right;
+            height: var(--slot__crop-top);
+            width: 100%;
+        }
+
+        .slot__setting--name {
+            grid-area: name;
+        }
+
+        .slot__setting--diet {
+            grid-area: diet;
+        }
+
+        .slot__setting--price_cents {
+            grid-area: price_cents;
+        }
+
+        .slot__setting--url {
+            grid-area: url;
+        }
+
+        .slot__setting-control--name {
+            font-size: calc(var(--slot__font-size) * 1.6);
+            width: 100%;
+        }
+
+        .slot__setting-control--diet, .slot__setting-control--price_cents {
+            width: calc(var(--slot__diet-control-width) - 1rem);
+        }
+
+        .slot__setting-control--price_cents {
+            font-size: calc(var(--slot__font-size) * 2);
+        }
+
+        .slot__setting-control--url {
+            width: var(--slot__url-control-width);
+            min-height: 80px;
         }
     </style>
 </head>
@@ -55,13 +137,24 @@
         <div class="slots">
             {% for slot_index, slot in slots.items() %}
             <div class="slot">
-                <h2 class="slot__title">Slot {{ loop.index }}</h2>
-                {% for k, v in slot.items() %}
-                <div class="setting">
-                    <span class="setting__name">{{ k.replace('_', ' ') }}</span>
-                    <input name="slot-{{ slot_index }}-{{ k }}" value="{{ v }}" type="text">
+                <div class="slot__noodles slot__noodles--left"></div>
+                <div class="slot__noodles slot__noodles--top"></div>
+                <div class="slot__noodles slot__noodles--top-right"></div>
+                <div class="setting slot__setting slot__setting--name">
+                    <textarea class="slot__setting-control--name"
+                              name="slot-{{ slot_index }}-name">{{ slot.name }}</textarea>
                 </div>
-                {% endfor %}
+                <div class="setting slot__setting slot__setting--diet">
+                    (<input class="slot__setting-control--diet" name="slot-{{ slot_index }}-diet" type="text"
+                            value="{{ slot.diet }}">)
+                </div>
+                <div class="setting slot__setting slot__setting--price_cents">
+                    <input class="slot__setting-control--price_cents" name="slot-{{ slot_index }}-price_cents" type="text"
+                           value="{{ slot.price_cents }}">c
+                </div>
+                <div class="setting slot__setting slot__setting--url">
+                    <textarea class="slot__setting-control--url" name="slot-{{ slot_index }}-url">{{ slot.url }}</textarea>
+                </div>
             </div>
             {% endfor %}
         </div>
