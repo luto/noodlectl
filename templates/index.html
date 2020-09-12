@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>noodlectl</title>
+    <style>
+        .slots {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .slot {
+            border: black 1px solid;
+            padding: 1rem;
+            flex-basis: 10rem;
+        }
+        .slot__title {
+            text-align: center;
+            margin: 0;
+            margin-bottom: 1rem;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type=submit] {
+            padding: 0.5rem 2rem;
+            margin-top: 3rem;
+            border: 0;
+            --glow-color: yellow;
+            animation: glowing 2s infinite;
+        }
+        @keyframes glowing {
+            0% { box-shadow: 0 0 0 var(--glow-color); }
+            50% { box-shadow: 0 0 2rem var(--glow-color); }
+            0% { box-shadow: 0 0 0 var(--glow-color); }
+        }
+        .setting {
+            margin-top: 0.5rem;
+        }
+        .setting__name {
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+    <form method="POST" action="/submit">
+        <h1>noodlectl();</h1>
+        <div class="slots">
+            {% for slot_index, slot in slots.items() %}
+            <div class="slot">
+                <h2 class="slot__title">Slot {{ loop.index }}</h2>
+                {% for k, v in slot.items() %}
+                <div class="setting">
+                    <span class="setting__name">{{ k.replace('_', ' ') }}</span>
+                    <input name="slot-{{ slot_index }}-{{ k }}" value="{{ v }}" type="text">
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <input type="submit" value="go go go" id="submit">
+    </form>
+</body>
+</html>
