@@ -18,6 +18,6 @@ We used the following, but other hardware should work equally well:
 $ cd noodlectl
 $ python3 -m venv venv
 $ source venv/bin/activate
-$ pip3 install -r requirements.txt
+$ pip3 install -r requirements-eink.txt -r requirements-web.txt
 $ FLASK_APP=noodlectl.py flask run --host 0.0.0.0
 ```
